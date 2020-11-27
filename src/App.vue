@@ -1,17 +1,48 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>Studio Ghibli</h1>
+    <div id="list-info" v-if="films.length">
+      <label for="film_select">Select a Film:</label>
+      <select id="film_select" v-model="selectedFilm">
+        <option disabled value="">Select a film</option>
+        <option v-for="film in films" :key="film.id" :value="film"> {{film.title}} </option>
+    </select>
+    </div>
+
+    <div class="main-container">
+      <film-detail :film="selectedFilm"></film-detail>
+    </div>
+    
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+
+import {eventBus} from './main.js';
+import FilmDetail from './components/FilmDetail.vue'
 
 export default {
   name: 'App',
+  data(){
+    return {
+      films:[],
+      selectedFilm: null,
+      favouriteFilms: []
+    }
+  },
   components: {
-    HelloWorld
+    'film-detail': FilmDetail,
+  },
+  methods:{
+    getFilms: function() {
+      fetch('https://ghibliapi.herokuapp.com/films')
+      .then(res => res.json())
+      .then(films => this.films = films)
+    }
+  },
+  mounted(){
+    this.getFilms();
+    eventBus.$on('film-selected', film => (this.selectedFilm = film));
   }
 }
 </script>
