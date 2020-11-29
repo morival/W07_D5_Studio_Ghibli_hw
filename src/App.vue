@@ -9,6 +9,19 @@
         <option v-for="film in films" :key="film.id" :value="film"> {{film.title}} </option>
       </select>
     </div>
+    <div id="filteredInput">
+      <h3>Filter Films by Year</h3>
+      <input type="number" v-model.number="fromYear"/>
+      <input type="number" v-model.number="untilYear"/>
+    </div>
+    <section>
+      <div class="film-by-year" v-for="(film, index) in filteredYear" :key="index">
+        <h4> {{film.title}} </h4>
+        <p> Year {{film.release_date}} </p>
+      </div>
+    </section>
+
+
     <!-- <div id="list-info" v-if="films.length">
       <film-list :films="films"></film-list>
     </div> -->
@@ -37,6 +50,8 @@ export default {
     return {
       films:[],
       selectedFilm: null,
+      fromYear: 1986,
+      untilYear: 2020,
     }
   },
   components: {
@@ -45,8 +60,26 @@ export default {
     'favourite-list': FavouriteList,
   },
   computed: {
-    favourites: function() {
+    favourites: function(){
       return this.films.filter(film => film.isFavourite);
+    },
+    filteredYearFrom: function(){
+      return this.films.filter((film) => {
+        return parseInt(film.release_date) >= this.fromYear;
+      });
+    },
+    filteredYearUntil: function(){
+      return this.films.filter((film) => {
+        return parseInt(film.release_date) <= this.untilYear;
+      });
+    },
+    filteredYear: function(){
+      const filterPromise = this.filteredYearFrom.filter((f) => {
+        return this.filteredYearUntil.some((u) => {
+          return f.release_date === u.release_date;
+        })
+      });
+      return filterPromise;
     }
   },
   methods:{
@@ -61,12 +94,10 @@ export default {
     markFavourite: function(film){
       const index = this.films.indexOf(film);
       this.films[index].isFavourite = true;
-      // this.favouriteFilms.push(this.films[index])
     },
     unmarkFavourite: function(film){
       const index = this.films.indexOf(film);
       this.films[index].isFavourite = false;
-      // this.favouriteFilms.slice(this.favouriteFilms.indexOf(film),1)
     }
   },
   mounted(){
