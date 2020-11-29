@@ -2,22 +2,22 @@
   <div id="app">
     <h1>Studio Ghibli</h1>
     <h2 v-if="!films.length">Loading...</h2>
-    <!-- <div id="list-dropdown" v-if="films.length">
+    <div id="list-dropdown" v-if="films.length">
       <label for="film_select">Select a Film:</label>
       <select id="film_select" v-model="selectedFilm">
         <option disabled value="">Select a film</option>
         <option v-for="film in films" :key="film.id" :value="film"> {{film.title}} </option>
       </select>
-    </div> -->
-    <div id="list-info" v-if="films.length">
-      <film-list :films="films"></film-list>
     </div>
+    <!-- <div id="list-info" v-if="films.length">
+      <film-list :films="films"></film-list>
+    </div> -->
 
     <div class="main-container">
       <film-detail v-if="selectedFilm" :film="selectedFilm"></film-detail>
     </div>
     <div>
-      <favourite-list :favouriteFilms="favouriteFilms"></favourite-list>
+      <favourite-list :favourites="favourites"></favourite-list>
     </div>
     
     
@@ -36,7 +36,6 @@ export default {
   data(){
     return {
       films:[],
-      favouriteFilms:[],
       selectedFilm: null,
     }
   },
@@ -45,56 +44,29 @@ export default {
     'film-detail': FilmDetail,
     'favourite-list': FavouriteList,
   },
-  // computed: {
-  //   favourites: function() {
-      
-  //     console.log("favourites called")
-  //     return this.favouriteFilms;
-      
-  //     // return this.films.filter(film => film.isFavourite);
-  //   }
-  // },
+  computed: {
+    favourites: function() {
+      return this.films.filter(film => film.isFavourite);
+    }
+  },
   methods:{
     getFilms: function(){
-      // fetch('https://ghibliapi.herokuapp.com/films')
-      // .then(res => res.json())
-      // .then(films => this.films = films)
-      // .then(films => this.films.isFavourite = false)
-      // .then(films => films.isFavourite = false)
-      // this.films.forEach(film => {
-      //   console.log("sdjisjdisjdijs");
-      //   film.isFavourite = false;
-      // });
-      // console.log("kfmkdfdmfkmdkfmdkmfkd");
-      // console.log(this.films.length)
-
-      const filmPromise = () => {
-        return fetch('https://ghibliapi.herokuapp.com/films')
+      fetch('https://ghibliapi.herokuapp.com/films')
         .then(res => res.json())
-        .then(films => this.films = films)
-        
-      }
-      filmPromise()
-      .then(films => films.forEach(film => {
-          film.isFavourite = true
-        }))
-      // Promise.all(filmPromise)
-      // .then((data) => {
-          // this.films = data;
-          // this.films.forEach(film => {
-            // film.isFavourite = false
-          // });
-      // })
+        .then(filmData => {
+          filmData.forEach(film => (film.isFavourite = false));
+          this.films = filmData;
+        })
     },
     markFavourite: function(film){
       const index = this.films.indexOf(film);
       this.films[index].isFavourite = true;
-      this.favouriteFilms.push(this.films[index])
+      // this.favouriteFilms.push(this.films[index])
     },
     unmarkFavourite: function(film){
       const index = this.films.indexOf(film);
       this.films[index].isFavourite = false;
-      this.favouriteFilms.slice(this.favouriteFilms.indexOf(film),1)
+      // this.favouriteFilms.slice(this.favouriteFilms.indexOf(film),1)
     }
   },
   mounted(){
