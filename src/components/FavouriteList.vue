@@ -2,7 +2,7 @@
   <div id="favourite-list">
       <h3>Your Favourites</h3>
       <ul>
-          <favourite-film v-for="(film, index) in favourites" :film="film" :key="index">
+          <favourite-film v-for="(film, index) in favouriteFilms" :film="film" :key="index">
 
           </favourite-film>
       </ul>
@@ -14,10 +14,10 @@ import FavouriteFilm from '@/components/FavouriteFilm.vue';
 
 export default {
     name: 'favourite-list',
-    props: ['favourites'],
+    props: ['favouriteFilms'],
     components: {
         'favourite-film': FavouriteFilm
-    }
+    },
 }
 </script>
 

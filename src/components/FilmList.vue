@@ -1,4 +1,4 @@
-<template>
+<template lang="html">
     <div class="film-list" v-if="films.length">
         <listed-film v-for="(film, index) in films" :film="film" :key="index"></listed-film>
     </div>
