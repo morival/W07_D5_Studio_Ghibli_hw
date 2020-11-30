@@ -1,41 +1,48 @@
 <template>
   <div id="app">
-    <h1>Studio Ghibli</h1>
-    <h2 v-if="!films.length">Loading...</h2>
-    <div id="list-dropdown" v-if="films.length">
-      <label for="film_select">Select a Film:</label>
-      <select id="film_select" v-model="selectedFilm">
-        <option disabled value="">Select a film</option>
-        <option v-for="film in films" :key="film.id" :value="film"> {{film.title}} </option>
-      </select>
+    <div class="logo">
+      <h1>Studio Ghibli</h1>
+      <h2 v-if="!films.length">Loading...</h2>
     </div>
-    <button v-on:click="showFilter = !showFilter">Filter Films by Year</button>
-    <button v-on:click="showFavourites = !showFavourites">Show Favourite Films</button>
-    <div id="filteredInput" v-show="!showFilter">
-      <h3>Filter Films by Year</h3>
-      <input type="number" v-model.number="fromYear"/>
-      <input type="number" v-model.number="untilYear"/>
-    </div>
-    <section v-show="!showFilter">
-      <div class="film-by-year" v-for="(film, index) in filteredYear" :key="index">
-        <h5> {{film.title}}</h5>
-        <h6> Year {{film.release_date}} </h6>
+    <div class="main-content">
+      <div class="left-bar">
+        <div id="list-dropdown" v-if="films.length">
+          <label for="film_select">Select a Film:</label>
+          <select id="film_select" v-model="selectedFilm">
+            <option disabled value="">Select a film</option>
+            <option v-for="film in films" :key="film.id" :value="film"> {{film.title}} </option>
+          </select>
+        </div>
+    <!-- buttons -->
+        <button v-on:click="showFilter = !showFilter">Filter Films by Year</button>
+        <button v-on:click="showFavourites = !showFavourites">Show Favourite Films</button>
+    <!-- filter input -->
+        <div id="filteredInput" v-show="!showFilter">
+          <h3>Filter Films by Year</h3>
+          <p>from year:</p>
+          <input type="number" min="1986" max="2020" v-model.number="fromYear"/>
+          <p>until year:</p>
+          <input type="number" min="1986" max="2020" v-model.number="untilYear"/>
+        </div>
+    <!-- filter results -->
+        <section v-show="!showFilter">
+          <div class="film-by-year" v-for="(film, index) in filteredYear" :key="index">
+            <h5> {{film.title}}</h5>
+            <h6> Year {{film.release_date}} </h6>
+          </div>
+        </section>
       </div>
-    </section>
-
-
-    <!-- <div id="list-info" v-if="films.length">
-      <film-list :films="films"></film-list>
-    </div> -->
-
-    <div class="main-container">
-      <film-detail v-if="selectedFilm" :film="selectedFilm"></film-detail>
+    <!-- film details -->
+      <div class="main-container">
+        <div>
+          <film-detail v-if="selectedFilm" :film="selectedFilm"></film-detail>
+        </div>
+    <!-- favourites -->
+        <div v-show="!showFavourites">
+          <favourite-list :favourites="favourites"></favourite-list>
+        </div>
+      </div>
     </div>
-    <div v-show="!showFavourites">
-      <favourite-list :favourites="favourites"></favourite-list>
-    </div>
-    
-    
   </div>
 </template>
 
@@ -119,7 +126,18 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  color: white;
+  padding: 30px;
+  background-color: #2c3e50;
+}
+/* .main-content {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+} */
+.left-bar {
+  width: 600px;
+  height: 600px;
+  overflow-y:  scroll;
+  
 }
 </style>
