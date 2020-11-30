@@ -9,15 +9,17 @@
         <option v-for="film in films" :key="film.id" :value="film"> {{film.title}} </option>
       </select>
     </div>
-    <div id="filteredInput">
+    <button v-on:click="showFilter = !showFilter">Filter Films by Year</button>
+    <button v-on:click="showFavourites = !showFavourites">Show Favourite Films</button>
+    <div id="filteredInput" v-show="!showFilter">
       <h3>Filter Films by Year</h3>
       <input type="number" v-model.number="fromYear"/>
       <input type="number" v-model.number="untilYear"/>
     </div>
-    <section>
+    <section v-show="!showFilter">
       <div class="film-by-year" v-for="(film, index) in filteredYear" :key="index">
-        <h4> {{film.title}} </h4>
-        <p> Year {{film.release_date}} </p>
+        <h5> {{film.title}}</h5>
+        <h6> Year {{film.release_date}} </h6>
       </div>
     </section>
 
@@ -29,7 +31,7 @@
     <div class="main-container">
       <film-detail v-if="selectedFilm" :film="selectedFilm"></film-detail>
     </div>
-    <div>
+    <div v-show="!showFavourites">
       <favourite-list :favourites="favourites"></favourite-list>
     </div>
     
@@ -52,6 +54,8 @@ export default {
       selectedFilm: null,
       fromYear: 1986,
       untilYear: 2020,
+      showFilter: true,
+      showFavourites: true
     }
   },
   components: {
@@ -98,7 +102,7 @@ export default {
     unmarkFavourite: function(film){
       const index = this.films.indexOf(film);
       this.films[index].isFavourite = false;
-    }
+    },
   },
   mounted(){
     this.getFilms();
